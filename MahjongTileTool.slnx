@@ -2,6 +2,6 @@
   <Configurations>
     <Platform Name="x64" />
   </Configurations>
-  <Project Path="Demo/Demo.vcxproj" />
-  <Project Path="MahjongTileExporter/MahjongTileExporter.vcxproj" />
+  <Project Path="Demo/Demo.vcxproj" Id="02c55a69-1cf0-45f7-bfe5-68e917b5c2cc" />
+  <Project Path="MahjongTileExporter/MahjongTileExporter.vcxproj" Id="a63501df-3d0a-4c38-afde-e0147a841b09" />
 </Solution>

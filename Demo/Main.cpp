@@ -52,7 +52,8 @@ constexpr Size TileFaceImageSize{ 256, 373 };
 
 void DrawTileAt(const Vec2& pos, const SizeF& tileSize, const TileInfo& tileInfo)
 {
-	const Color TileFaceColor = Palette::White.lerp(Palette::Wheat, 0.1);
+	const Color TileFaceColor1 = Palette::White.lerp(Palette::Wheat, 0.1);
+	const Color TileFaceColor2 = Palette::White.lerp(Palette::Wheat, 0.15);
 	const Color TileBorderColor = Palette::Black;
 	const double TileBorderWidth = 4.0;
 	const double TileBorderRadius = 8.0;
@@ -60,8 +61,8 @@ void DrawTileAt(const Vec2& pos, const SizeF& tileSize, const TileInfo& tileInfo
 
 	const auto scaledTexture = tileInfo.faceTexture.resized(tileSize);
 	scaledTexture.regionAt(pos).stretched(0, 0, 24, 0).rounded(TileBorderRadius).draw(Palette::Orange).drawFrame(TileBorderWidth, TileBorderColor);
-	scaledTexture.regionAt(pos).stretched(0, 0, 12, 0).rounded(TileBorderRadius).draw(Palette::Wheat.lerp(Palette::Gray, 0.3));
-	scaledTexture.regionAt(pos).rounded(TileBorderRadius).draw(TileFaceColor).drawFrame(TileBorderWidth, Palette::Wheat);
+	scaledTexture.regionAt(pos).stretched(0, 0, 12, 0).rounded(TileBorderRadius).draw(Palette::Wheat.lerp(Palette::Gray, 0.2));
+	scaledTexture.regionAt(pos).rounded(TileBorderRadius).draw(Arg::top = TileFaceColor1, Arg::bottom = TileFaceColor2).drawFrame(TileBorderWidth, Palette::Wheat);
 	scaledTexture.regionAt(pos).stretched(0, 0, 24, 0).rounded(TileBorderRadius).drawFrame(TileBorderWidth, TileBorderColor);
 	scaledTexture.scaled(TileFaceScale).drawAt(pos);
 }
@@ -72,7 +73,7 @@ void Main()
 	Scene::SetResizeMode(ResizeMode::Keep);
 	Window::Resize((Scene::Size() * 0.75).asPoint());
 
-	Scene::SetBackground(ColorF{ 0, 0.4, 0.25 });
+	Scene::SetBackground(ColorF{ 0.1, 0.5, 0.3 });
 
 	Array<TileInfo> tileInfoList;
 
@@ -86,7 +87,12 @@ void Main()
 
 			if (not FileSystem::Exists(path)) continue;
 
-			Image{ path }.negated().stamp(image, 0, 0, TileLayerColors[iLayer]);
+			Image layer{ path };
+			layer.negate();
+			const auto blurred = layer.gaussianBlurred(3);
+			blurred.stamp(image, 0, -3, Palette::Silver);
+			layer.stamp(image, 0, 0, TileLayerColors[iLayer]);
+			blurred.stamp(image, 0, 3, ColorF{ Palette::White, 0.07 });
 		}
 
 		tileInfoList << TileInfo{ .faceTexture = Texture{ image } };
@@ -94,6 +100,9 @@ void Main()
 
 	while (System::Update())
 	{
+		// BG
+		Circle{ Scene::CenterF(), Scene::Rect().center().distanceFrom(Scene::Rect().tl()) }.draw(ColorF{0, 0}, ColorF{0, 0.3});
+
 		{
 			const int columns = 9;
 			const int rows = tileInfoList.size() / columns + 1;
