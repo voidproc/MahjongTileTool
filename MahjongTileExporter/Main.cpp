@@ -1,7 +1,7 @@
 ﻿# include <Siv3D.hpp> // Siv3D v0.6.16
 
 /*
- * 麻雀牌画像を保存する
+ * 麻雀牌画像を作成しPNG形式で保存する
  *
  * 使用フォント: GL-MahjongTile (https://github.com/Gutenberg-Labo/DingbatFonts)
  */
