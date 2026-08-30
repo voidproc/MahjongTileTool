@@ -79,7 +79,7 @@ void Main()
 
 	for (const auto name : TileNameList)
 	{
-		Image image{ TileFaceImageSize, ColorF{ 0, 0 } };
+		Image image{ TileFaceImageSize, ColorF{ 1.0, 0 } };
 
 		for (int iLayer = 0; iLayer < 3; ++iLayer)
 		{
@@ -89,10 +89,10 @@ void Main()
 
 			Image layer{ path };
 			layer.negate();
-			const auto blurred = layer.gaussianBlurred(3);
-			blurred.stamp(image, 0, -3, Palette::Silver);
+			const auto blurred = layer.gaussianBlurred(5);
+			blurred.stamp(image, 0, -4, Palette::Gray);
 			layer.stamp(image, 0, 0, TileLayerColors[iLayer]);
-			blurred.stamp(image, 0, 3, ColorF{ Palette::White, 0.07 });
+			blurred.stamp(image, 0, 4, ColorF{ Palette::White, 0.08 });
 		}
 
 		tileInfoList << TileInfo{ .faceTexture = Texture{ image } };
